@@ -14,19 +14,38 @@ public class VideoConferenceUI extends JFrame {
         setLayout(new BorderLayout());
         setResizable(false); // Disable window resizing
         setMaximumSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+        getContentPane().setBackground(Color.DARK_GRAY); 
+        
+         // Wrapper panel for margin
+        JPanel wrapperPanel = new JPanel(new BorderLayout());
+        wrapperPanel.setBackground(Color.DARK_GRAY); // Match the JFrame background
+        wrapperPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Margin from all sides
 
         // Top panel
-        JPanel topPanel = new JPanel();
-        topPanel.setBackground(Color.DARK_GRAY);
-        topPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
-        topPanel.setPreferredSize(new Dimension(800, 80));
+        JPanel topPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setColor(getBackground());
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+                g2d.dispose();
+            }
+        };
+//        topPanel.setBackground(Color.LIGHT_GRAY);
+        topPanel.setBackground(new Color(83, 83, 83));
+        topPanel.setPreferredSize(new Dimension(FRAME_WIDTH - 40, 50));
         topPanel.setLayout(new BorderLayout());
+        topPanel.setBorder(BorderFactory.createEmptyBorder(0, 13, 0, 0)); // Padding inside top panel
+
         JLabel topLabel = new JLabel("Fathima is presenting", SwingConstants.LEFT);
         topLabel.setForeground(Color.WHITE);
         topLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-        topLabel.setIcon(loadIcon("/presentor-image.png")); // Replace with actual path
+        topLabel.setIcon(loadIcon("/presentor-image.png"));
+        topLabel.setBorder(BorderFactory.createEmptyBorder(13, 0, 0, 0));
         topPanel.add(topLabel, BorderLayout.WEST);
 
+        wrapperPanel.add(topPanel, BorderLayout.NORTH);
         // Center panel (main video display)
            JPanel centerPanel = new JPanel() {
             @Override
@@ -38,14 +57,15 @@ public class VideoConferenceUI extends JFrame {
         centerPanel.setLayout(new GridBagLayout());
 
         RoundedImageLabel mainVideo = new RoundedImageLabel(loadIcon("/presenter-image.jpg"), 14); // Replace with actual path
-        mainVideo.setPreferredSize(new Dimension(700, 610)); // Set the size for the video image
+        mainVideo.setPreferredSize(new Dimension(680, 590)); // Set the size for the video image
         centerPanel.add(mainVideo);
 
         // Right panel (participant thumbnails)
         JPanel rightPanel = new JPanel();
+        rightPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 0, 20));
         rightPanel.setLayout(new GridLayout(4, 2, 10, 10)); // Adjust rows and columns as needed
         rightPanel.setBackground(Color.DARK_GRAY);
-        rightPanel.setPreferredSize(new Dimension(460, 300)); 
+        rightPanel.setPreferredSize(new Dimension(480, 400)); 
 
         // Adding participant thumbnails
         String[] participantNames = {"Jenelia", "Joe Carlson", "Lucy Sera", "Sara Johns", 
@@ -79,7 +99,7 @@ public class VideoConferenceUI extends JFrame {
         JLabel classMeetingLabel = new JLabel("Class meeting", SwingConstants.LEFT);
         classMeetingLabel.setForeground(Color.WHITE);
         classMeetingLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-        classMeetingLabel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
+        classMeetingLabel.setBorder(BorderFactory.createEmptyBorder(0, 13, 0, 0));
         bottomPanel.add(classMeetingLabel, BorderLayout.WEST);
 
         // Center panel for control buttons
@@ -102,7 +122,7 @@ public class VideoConferenceUI extends JFrame {
         JPanel rightIconsPanel = new JPanel();
         rightIconsPanel.setBackground(Color.DARK_GRAY);
         rightIconsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 10));
-          rightIconsPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        rightIconsPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
          String[] additionalIcons = {"/i.png", "/everyone.png", "/chat.png", "/activities.png"}; // Replace with actual paths
         int[][] additionalIconSizes = {
                 {20, 20}, {22, 20}, {20, 20}, {24, 22}
@@ -191,6 +211,8 @@ public class VideoConferenceUI extends JFrame {
         return button;
     }
 
+    
+    
     private ImageIcon scaleImageIcon(ImageIcon icon, int width, int height) {
         if (icon != null) {
             Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
